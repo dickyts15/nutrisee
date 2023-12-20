@@ -27,12 +27,15 @@ class _BMICalculatorResultPageState extends State<BMICalculatorResultPage> {
     } else if (calculateBMI() >= 18.5 && calculateBMI() <= 24.9) {
       resultText = 'Normal';
       resultStatus = 'Anda Memiliki Berat Badan Normal';
-    } else if (calculateBMI() >= 25.0 && calculateBMI() <= 29.9) {
+    } else if (calculateBMI() >= 24.9 && calculateBMI() <= 29.9) {
       resultText = 'Overweight';
       resultStatus = 'Anda Memiliki Berat Badan Overweight';
-    } else {
+    } else if (calculateBMI() >= 30.0) {
       resultText = 'Obese';
       resultStatus = 'Anda Memiliki Berat Badan Obese';
+    } else {
+      resultText = 'Invalid';
+      resultStatus = 'Inputan Invalid';
     }
 
     Color _getResultColor(String resultText) {
@@ -209,6 +212,7 @@ class _BMICalculatorResultPageState extends State<BMICalculatorResultPage> {
   }
 
   double calculateBMI() {
+    bmi = 0;
     bmi = widget.berat / ((widget.tinggi * 0.01) * (widget.tinggi * 0.01));
     return bmi;
   }

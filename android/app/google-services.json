@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "699181975672",
+    "project_id": "nutrisee-b8c92",
+    "storage_bucket": "nutrisee-b8c92.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:699181975672:android:6ff14922494c63575b458d",
+        "android_client_info": {
+          "package_name": "com.example.nutrisee"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkxNDkbJ8t4DI2Qa3tOvOwaLvEOLjUGXs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nutrisee/pages/bmi_calculator_result_page.dart';
+import 'package:nutrisee/utils/validator.dart';
 
 class BMICalculatorInputPage extends StatefulWidget {
   const BMICalculatorInputPage({super.key});
@@ -17,7 +18,7 @@ class _BMICalculatorInputPageState extends State<BMICalculatorInputPage> {
   final _focusTinggi = FocusNode();
   final _focusBerat = FocusNode();
 
-  String selectedGender = '';
+  String selectedGender = 'Laki-laki';
 
   bool _isProcessing = false;
   @override
@@ -75,6 +76,8 @@ class _BMICalculatorInputPageState extends State<BMICalculatorInputPage> {
                               controller: _tinggiTextController,
                               focusNode: _focusTinggi,
                               keyboardType: TextInputType.number,
+                              validator: (value) =>
+                                  Validator.validateNumber(number: value),
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,
@@ -109,6 +112,8 @@ class _BMICalculatorInputPageState extends State<BMICalculatorInputPage> {
                               controller: _beratTextController,
                               focusNode: _focusBerat,
                               keyboardType: TextInputType.number,
+                              validator: (value) =>
+                                  Validator.validateNumber(number: value),
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,

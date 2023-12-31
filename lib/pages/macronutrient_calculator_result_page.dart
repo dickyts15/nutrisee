@@ -82,7 +82,7 @@ class _MacronutrientCalculatorResultPageState
                       child: Column(
                         children: [
                           Text(
-                            resultDailyCalories().toStringAsFixed(0),
+                            resultCalories,
                             style: GoogleFonts.crimsonPro(
                               fontWeight: FontWeight.bold,
                               fontSize: 24.0,

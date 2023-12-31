@@ -5,19 +5,22 @@ import 'package:http/http.dart' as http;
 
 class DataService {
   Future insertUser(
-      String appid,
-      String username,
-      String email,
-      String password,
-      String gender,
-      String age,
-      String namauser,
-      String weightgoal,
-      String weight,
-      String height,
-      String caloriestarget,
-      String profpic,
-      String uid) async {
+    String appid,
+    String username,
+    String email,
+    String password,
+    String gender,
+    String age,
+    String namauser,
+    String weightgoal,
+    String weight,
+    String height,
+    String caloriestarget,
+    String profpic,
+    String uid,
+    String tanggallahir,
+    String activity,
+  ) async {
     String uri = 'https://io.etter.cloud/v4/insert';
 
     try {
@@ -37,7 +40,9 @@ class DataService {
         'height': height,
         'caloriestarget': caloriestarget,
         'profpic': profpic,
-        'uid': uid
+        'uid': uid,
+        'tanggallahir': tanggallahir,
+        'activity': activity,
       });
 
       if (response.statusCode == 200) {

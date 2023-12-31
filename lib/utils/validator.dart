@@ -65,7 +65,7 @@ class Validator {
     }
 
     if (age.isEmpty) {
-      return 'Username can\'t be empty';
+      return 'Age can\'t be empty';
     }
 
     return null;
@@ -77,7 +77,20 @@ class Validator {
     }
 
     if (gender.isEmpty) {
-      return 'Username can\'t be empty';
+      return 'Gender can\'t be empty';
+    }
+
+    return null;
+  }
+
+  static String? validateNumber({required String? number}) {
+    if (number == null || number.isEmpty) {
+      return "Can't be empty";
+    }
+
+    final RegExp regex = RegExp(r'^[0-9]+$');
+    if (!regex.hasMatch(number)) {
+      return "Only numbers are allowed";
     }
 
     return null;

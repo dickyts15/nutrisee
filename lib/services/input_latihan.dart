@@ -5,15 +5,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nutrisee/component/models/latihan_model.dart';
-import 'package:nutrisee/component/models/user_model.dart';
+import 'package:nutrisee/pages/home_page.dart';
 import 'package:nutrisee/utils/config.dart';
-import 'package:nutrisee/utils/firebase_auth.dart';
 import 'package:nutrisee/utils/restapi.dart';
+import 'package:intl/intl.dart';
+import 'package:nutrisee/utils/validator.dart';
 
 class InputLatihan extends StatefulWidget {
   final User user;
+  final String currDate;
 
-  const InputLatihan({super.key, required this.user});
+  const InputLatihan({super.key, required this.user, required this.currDate});
   @override
   _InputLatihanState createState() => _InputLatihanState();
 }
@@ -23,12 +25,12 @@ class _InputLatihanState extends State<InputLatihan> {
   final _latihanKey = GlobalKey<FormState>();
   final _namaLatihanController = TextEditingController();
   final _caloriesController = TextEditingController();
-  final _dateController = TextEditingController();
 
   final _focusNamaLatihan = FocusNode();
   final _focusCalories = FocusNode();
   final _focusDate = FocusNode();
 
+  String createdDate = '';
   late User loggedInUser;
   bool _isProcessing = false;
 
@@ -38,6 +40,7 @@ class _InputLatihanState extends State<InputLatihan> {
     super.initState();
     getCurrentUser();
     loggedInUser = widget.user;
+    createdDate = widget.currDate;
   }
 
   void getCurrentUser() async {
@@ -80,19 +83,15 @@ class _InputLatihanState extends State<InputLatihan> {
                 SizedBox(height: 20),
                 TextFormField(
                   controller: _namaLatihanController,
+                  validator: (value) => Validator.validateName(name: value),
                   decoration: InputDecoration(labelText: 'Nama Latihan'),
                 ),
                 SizedBox(height: 10),
                 TextFormField(
                   controller: _caloriesController,
+                  validator: (value) => Validator.validateNumber(number: value),
                   decoration: InputDecoration(labelText: 'Calories'),
                   keyboardType: TextInputType.number,
-                ),
-                SizedBox(height: 10),
-                TextFormField(
-                  controller: _dateController,
-                  decoration:
-                      InputDecoration(labelText: 'Tanggal (YYYY-MM-DD)'),
                 ),
                 SizedBox(height: 20),
                 _isProcessing
@@ -116,7 +115,7 @@ class _InputLatihanState extends State<InputLatihan> {
                                           appid,
                                           _namaLatihanController.text,
                                           _caloriesController.text,
-                                          _dateController.text,
+                                          createdDate.toString(),
                                           loggedInUser.uid));
 
                                   List<LatihanModel> latihan = response
@@ -127,8 +126,14 @@ class _InputLatihanState extends State<InputLatihan> {
                                     _isProcessing = false;
                                   });
 
-                                  if (latihan != null && latihan.length == 1) {
-                                    Navigator.pop(context);
+                                  if (latihan.length == 1) {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => HomePage(
+                                                user: loggedInUser,
+                                                loggedEmail: loggedInUser.email
+                                                    .toString())));
                                   } else {
                                     if (kDebugMode) {
                                       print(response);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nutrisee/pages/macronutrient_calculator_result_page.dart';
+import 'package:nutrisee/utils/validator.dart';
 
 class MacronutrientCalculatorInputPage extends StatefulWidget {
   const MacronutrientCalculatorInputPage({super.key});
@@ -21,7 +22,7 @@ class _MacronutrientCalculatorInputPageState
   final _focusTinggi = FocusNode();
   final _focusBerat = FocusNode();
 
-  String _gender = '';
+  String _gender = 'Laki-laki';
 
   bool _isProcessing = false;
   @override
@@ -80,6 +81,8 @@ class _MacronutrientCalculatorInputPageState
                               controller: _umurTextController,
                               focusNode: _focusUmur,
                               keyboardType: TextInputType.number,
+                              validator: (value) =>
+                                  Validator.validateNumber(number: value),
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,
@@ -114,6 +117,8 @@ class _MacronutrientCalculatorInputPageState
                               controller: _tinggiTextController,
                               focusNode: _focusTinggi,
                               keyboardType: TextInputType.number,
+                              validator: (value) =>
+                                  Validator.validateNumber(number: value),
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,
@@ -148,6 +153,8 @@ class _MacronutrientCalculatorInputPageState
                               controller: _beratTextController,
                               focusNode: _focusBerat,
                               keyboardType: TextInputType.number,
+                              validator: (value) =>
+                                  Validator.validateNumber(number: value),
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,

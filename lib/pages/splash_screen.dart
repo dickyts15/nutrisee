@@ -33,21 +33,31 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AnimatedSplashScreen(
-        splash: Column(
-          children: <Widget>[
-            Image.asset(
-              'nutrisee.jpg',
-              height: 100,
-              width: 200,
-            )
-          ],
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Colors.grey, Colors.black],
+          ),
         ),
-        backgroundColor: Colors.white,
-        nextScreen: const WelcomePage(),
-        splashTransition: SplashTransition.scaleTransition,
-        pageTransitionType: PageTransitionType.fade,
-        duration: 1000,
+        child: AnimatedSplashScreen(
+          splash: Column(
+            children: <Widget>[
+              Image.asset(
+                'nutrisee.jpg',
+                height: 100,
+                width: 200,
+              )
+            ],
+          ),
+          backgroundColor: Colors.white,
+          nextScreen: const WelcomePage(),
+          splashTransition: SplashTransition.scaleTransition,
+          pageTransitionType: PageTransitionType.fade,
+          duration: 1000,
+        ),
       ),
     );
   }

@@ -5,16 +5,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nutrisee/component/models/Dinner_model.dart';
-import 'package:nutrisee/component/models/latihan_model.dart';
-import 'package:nutrisee/component/models/user_model.dart';
+import 'package:nutrisee/pages/buku_harian_page.dart';
 import 'package:nutrisee/utils/config.dart';
-import 'package:nutrisee/utils/firebase_auth.dart';
 import 'package:nutrisee/utils/restapi.dart';
+import 'package:intl/intl.dart';
+import 'package:nutrisee/utils/validator.dart';
 
 class InputDinner extends StatefulWidget {
   final User user;
+  final String currDate;
 
-  const InputDinner({super.key, required this.user});
+  const InputDinner({super.key, required this.user, required this.currDate});
   @override
   _InputDinnerState createState() => _InputDinnerState();
 }
@@ -27,15 +28,14 @@ class _InputDinnerState extends State<InputDinner> {
   final _carbsController = TextEditingController();
   final _fatController = TextEditingController();
   final _proteinController = TextEditingController();
-  final _dateController = TextEditingController();
 
   final _focusNamaDinner = FocusNode();
   final _focusQuantity = FocusNode();
   final _focusCarbs = FocusNode();
   final _focusFat = FocusNode();
   final _focusProtein = FocusNode();
-  final _focusDate = FocusNode();
 
+  String createdDate = '';
   late User loggedInUser;
   bool _isProcessing = false;
 
@@ -45,6 +45,8 @@ class _InputDinnerState extends State<InputDinner> {
     super.initState();
     getCurrentUser();
     loggedInUser = widget.user;
+
+    createdDate = widget.currDate;
   }
 
   void getCurrentUser() async {
@@ -87,34 +89,33 @@ class _InputDinnerState extends State<InputDinner> {
                 SizedBox(height: 20),
                 TextFormField(
                   controller: _namaDinnerController,
+                  validator: (value) => Validator.validateName(name: value),
                   decoration: InputDecoration(labelText: 'Nama Dinner'),
                 ),
                 SizedBox(height: 10),
                 TextFormField(
                   controller: _quantityController,
+                  validator: (value) => Validator.validateNumber(number: value),
                   decoration: InputDecoration(labelText: 'Quantity'),
                   keyboardType: TextInputType.number,
                 ),
                 TextFormField(
                   controller: _carbsController,
+                  validator: (value) => Validator.validateNumber(number: value),
                   decoration: InputDecoration(labelText: 'Carbs'),
                   keyboardType: TextInputType.number,
                 ),
                 TextFormField(
                   controller: _fatController,
+                  validator: (value) => Validator.validateNumber(number: value),
                   decoration: InputDecoration(labelText: 'Fat'),
                   keyboardType: TextInputType.number,
                 ),
                 TextFormField(
                   controller: _proteinController,
+                  validator: (value) => Validator.validateNumber(number: value),
                   decoration: InputDecoration(labelText: 'Protein'),
                   keyboardType: TextInputType.number,
-                ),
-                SizedBox(height: 10),
-                TextFormField(
-                  controller: _dateController,
-                  decoration:
-                      InputDecoration(labelText: 'Tanggal (YYYY-MM-DD)'),
                 ),
                 SizedBox(height: 20),
                 _isProcessing
@@ -129,7 +130,6 @@ class _InputDinnerState extends State<InputDinner> {
                                 _focusCarbs.unfocus();
                                 _focusFat.unfocus();
                                 _focusProtein.unfocus();
-                                _focusDate.unfocus();
 
                                 if (_makananKey.currentState!.validate()) {
                                   setState(() {
@@ -153,7 +153,7 @@ class _InputDinnerState extends State<InputDinner> {
                                           _carbsController.text,
                                           _fatController.text,
                                           _proteinController.text,
-                                          _dateController.text,
+                                          createdDate.toString(),
                                           loggedInUser.uid));
 
                                   List<DinnerModel> Dinner = response
@@ -164,8 +164,16 @@ class _InputDinnerState extends State<InputDinner> {
                                     _isProcessing = false;
                                   });
 
-                                  if (Dinner != null && Dinner.length == 1) {
-                                    Navigator.pop(context);
+                                  if (Dinner.length == 1) {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                BukuHarianPage(
+                                                    user: loggedInUser,
+                                                    loggedEmail: loggedInUser
+                                                        .email
+                                                        .toString())));
                                   } else {
                                     if (kDebugMode) {
                                       print(response);

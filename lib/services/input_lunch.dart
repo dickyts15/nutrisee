@@ -5,16 +5,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nutrisee/component/models/Lunch_model.dart';
-import 'package:nutrisee/component/models/latihan_model.dart';
-import 'package:nutrisee/component/models/user_model.dart';
+import 'package:nutrisee/pages/buku_harian_page.dart';
 import 'package:nutrisee/utils/config.dart';
-import 'package:nutrisee/utils/firebase_auth.dart';
 import 'package:nutrisee/utils/restapi.dart';
+import 'package:intl/intl.dart';
+import 'package:nutrisee/utils/validator.dart';
 
 class InputLunch extends StatefulWidget {
   final User user;
+  final String currDate;
 
-  const InputLunch({super.key, required this.user});
+  const InputLunch({super.key, required this.user, required this.currDate});
   @override
   _InputLunchState createState() => _InputLunchState();
 }
@@ -27,7 +28,6 @@ class _InputLunchState extends State<InputLunch> {
   final _carbsController = TextEditingController();
   final _fatController = TextEditingController();
   final _proteinController = TextEditingController();
-  final _dateController = TextEditingController();
 
   final _focusNamaLunch = FocusNode();
   final _focusQuantity = FocusNode();
@@ -36,6 +36,7 @@ class _InputLunchState extends State<InputLunch> {
   final _focusProtein = FocusNode();
   final _focusDate = FocusNode();
 
+  String createdDate = '';
   late User loggedInUser;
   bool _isProcessing = false;
 
@@ -45,6 +46,7 @@ class _InputLunchState extends State<InputLunch> {
     super.initState();
     getCurrentUser();
     loggedInUser = widget.user;
+    createdDate = widget.currDate;
   }
 
   void getCurrentUser() async {
@@ -87,34 +89,33 @@ class _InputLunchState extends State<InputLunch> {
                 SizedBox(height: 20),
                 TextFormField(
                   controller: _namaLunchController,
+                  validator: (value) => Validator.validateName(name: value),
                   decoration: InputDecoration(labelText: 'Nama Lunch'),
                 ),
                 SizedBox(height: 10),
                 TextFormField(
                   controller: _quantityController,
+                  validator: (value) => Validator.validateNumber(number: value),
                   decoration: InputDecoration(labelText: 'Quantity'),
                   keyboardType: TextInputType.number,
                 ),
                 TextFormField(
                   controller: _carbsController,
+                  validator: (value) => Validator.validateNumber(number: value),
                   decoration: InputDecoration(labelText: 'Carbs'),
                   keyboardType: TextInputType.number,
                 ),
                 TextFormField(
                   controller: _fatController,
+                  validator: (value) => Validator.validateNumber(number: value),
                   decoration: InputDecoration(labelText: 'Fat'),
                   keyboardType: TextInputType.number,
                 ),
                 TextFormField(
                   controller: _proteinController,
+                  validator: (value) => Validator.validateNumber(number: value),
                   decoration: InputDecoration(labelText: 'Protein'),
                   keyboardType: TextInputType.number,
-                ),
-                SizedBox(height: 10),
-                TextFormField(
-                  controller: _dateController,
-                  decoration:
-                      InputDecoration(labelText: 'Tanggal (YYYY-MM-DD)'),
                 ),
                 SizedBox(height: 20),
                 _isProcessing
@@ -148,12 +149,12 @@ class _InputLunchState extends State<InputLunch> {
                                       await ds.insertLunch(
                                           appid,
                                           _namaLunchController.text,
-                                          _quantityController.text,
+                                          createdDate.toString(),
                                           calories.toString(),
                                           _carbsController.text,
-                                          _fatController.text,
                                           _proteinController.text,
-                                          _dateController.text,
+                                          _fatController.text,
+                                          _quantityController.text,
                                           loggedInUser.uid));
 
                                   List<LunchModel> Lunch = response
@@ -164,8 +165,16 @@ class _InputLunchState extends State<InputLunch> {
                                     _isProcessing = false;
                                   });
 
-                                  if (Lunch != null && Lunch.length == 1) {
-                                    Navigator.pop(context);
+                                  if (Lunch.length == 1) {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                BukuHarianPage(
+                                                    user: loggedInUser,
+                                                    loggedEmail: loggedInUser
+                                                        .email
+                                                        .toString())));
                                   } else {
                                     if (kDebugMode) {
                                       print(response);

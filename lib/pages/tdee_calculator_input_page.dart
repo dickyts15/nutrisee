@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nutrisee/pages/tdee_calculator_result_page.dart';
+import 'package:nutrisee/utils/validator.dart';
 
 class TDEECalculatorInputPage extends StatefulWidget {
   const TDEECalculatorInputPage({super.key});
@@ -18,6 +19,7 @@ class _TDEECalculatorInputPageState extends State<TDEECalculatorInputPage> {
   final _bodyfatTextController = TextEditingController();
 
   String _aktivitas = 'Sedentary (office job)';
+  double _bodyfat = 15.0;
 
   final _focusUmur = FocusNode();
   final _focusTinggi = FocusNode();
@@ -84,6 +86,8 @@ class _TDEECalculatorInputPageState extends State<TDEECalculatorInputPage> {
                               controller: _umurTextController,
                               focusNode: _focusUmur,
                               keyboardType: TextInputType.number,
+                              validator: (value) =>
+                                  Validator.validateNumber(number: value),
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,
@@ -95,7 +99,7 @@ class _TDEECalculatorInputPageState extends State<TDEECalculatorInputPage> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                border: OutlineInputBorder(
+                                border: const OutlineInputBorder(
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(16.0),
                                   ),
@@ -118,6 +122,8 @@ class _TDEECalculatorInputPageState extends State<TDEECalculatorInputPage> {
                               controller: _tinggiTextController,
                               focusNode: _focusTinggi,
                               keyboardType: TextInputType.number,
+                              validator: (value) =>
+                                  Validator.validateNumber(number: value),
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,
@@ -152,6 +158,8 @@ class _TDEECalculatorInputPageState extends State<TDEECalculatorInputPage> {
                               controller: _beratTextController,
                               focusNode: _focusBerat,
                               keyboardType: TextInputType.number,
+                              validator: (value) =>
+                                  Validator.validateNumber(number: value),
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,
@@ -239,7 +247,7 @@ class _TDEECalculatorInputPageState extends State<TDEECalculatorInputPage> {
                                     ),
                                   ),
                                   DropdownMenuItem(
-                                    value: 'Heavy Exercise (6-7 days/week)',
+                                    value: 'Heavy Exercise',
                                     child: Text(
                                       'Heavy Exercise',
                                       style: GoogleFonts.rubik(
@@ -274,6 +282,8 @@ class _TDEECalculatorInputPageState extends State<TDEECalculatorInputPage> {
                               controller: _bodyfatTextController,
                               focusNode: _focusBodyFat,
                               keyboardType: TextInputType.number,
+                              validator: (value) =>
+                                  Validator.validateNumber(number: value),
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,
@@ -369,7 +379,7 @@ class _TDEECalculatorInputPageState extends State<TDEECalculatorInputPage> {
                                                 _tinggiTextController.text);
                                             double _berat = double.parse(
                                                 _beratTextController.text);
-                                            double _bodyfat = double.parse(
+                                            _bodyfat = double.parse(
                                                 _bodyfatTextController.text);
 
                                             Navigator.of(context)

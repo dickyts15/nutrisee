@@ -42,6 +42,8 @@ dependencies:
   fluttertoast: ^8.2.4
   crypt: ^4.3.1
   flutter_calendar_carousel: ^2.4.2
+  file_picker: ^6.1.1
+  quickalert: ^1.0.2
 
 dev_dependencies:
   flutter_test:

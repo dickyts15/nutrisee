@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nutrisee/component/models/breakfast_model.dart';
 import 'package:nutrisee/component/models/dinner_model.dart';
+import 'package:nutrisee/component/models/latihan_model.dart';
 import 'package:nutrisee/component/models/lunch_model.dart';
 import 'package:nutrisee/component/models/snack_model.dart';
 import 'package:nutrisee/component/models/user_model.dart';
@@ -19,6 +20,8 @@ import 'package:nutrisee/pages/welcome_page.dart';
 import 'package:nutrisee/services/input_latihan.dart';
 import 'package:nutrisee/utils/config.dart';
 import 'package:nutrisee/utils/restapi.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class HomePage extends StatefulWidget {
   final User user;
@@ -42,35 +45,58 @@ class _HomePageState extends State<HomePage> {
 
   List data = [];
   List<UserModel> user = [];
+
+  List dataBreakfast = [];
+  List dataLunch = [];
+  List dataDinner = [];
+  List dataSnack = [];
+  List dataLatihan = [];
   List<BreakfastModel> breakfast = [];
   List<LunchModel> lunch = [];
   List<DinnerModel> dinner = [];
   List<SnackModel> snack = [];
+  List<LatihanModel> latihan = [];
 
-  selectAllFoods() async {
-    data = jsonDecode(await ds.selectWhere(
+  selectAllData() async {
+    dataBreakfast = jsonDecode(await ds.selectWhere(
         token, project, 'breakfast', appid, 'uid', _currentUser.uid));
-    breakfast = data.map((e) => BreakfastModel.fromJson(e)).toList();
+    breakfast = dataBreakfast.map((e) => BreakfastModel.fromJson(e)).toList();
 
-    data = jsonDecode(await ds.selectWhere(
+    dataLunch = jsonDecode(await ds.selectWhere(
         token, project, 'lunch', appid, 'uid', _currentUser.uid));
-    lunch = data.map((e) => LunchModel.fromJson(e)).toList();
+    lunch = dataLunch.map((e) => LunchModel.fromJson(e)).toList();
 
-    data = jsonDecode(await ds.selectWhere(
+    dataDinner = jsonDecode(await ds.selectWhere(
         token, project, 'dinner', appid, 'uid', _currentUser.uid));
-    dinner = data.map((e) => DinnerModel.fromJson(e)).toList();
+    dinner = dataDinner.map((e) => DinnerModel.fromJson(e)).toList();
 
-    data = jsonDecode(await ds.selectWhere(
+    dataSnack = jsonDecode(await ds.selectWhere(
         token, project, 'snack', appid, 'uid', _currentUser.uid));
-    snack = data.map((e) => SnackModel.fromJson(e)).toList();
+    snack = dataSnack.map((e) => SnackModel.fromJson(e)).toList();
+
+    dataLatihan = jsonDecode(await ds.selectWhere(
+        token, project, 'latihan', appid, 'uid', _currentUser.uid));
+    latihan = dataLatihan.map((e) => LatihanModel.fromJson(e)).toList();
 
     setState(() {
       breakfast = breakfast;
       lunch = lunch;
       dinner = dinner;
       snack = snack;
+      latihan = latihan;
     });
   }
+
+  List<LatihanModel> latihanCurrDate = [];
+  List<BreakfastModel> breakfastCurrDate = [];
+  List<LunchModel> lunchCurrDate = [];
+  List<DinnerModel> dinnerCurrDate = [];
+  List<SnackModel> snackCurrDate = [];
+  List<LatihanModel> latihanCurrDate_pre = [];
+  List<BreakfastModel> breakfastCurrDate_pre = [];
+  List<LunchModel> lunchCurrDate_pre = [];
+  List<DinnerModel> dinnerCurrDate_pre = [];
+  List<SnackModel> snackCurrDate_pre = [];
 
   selectIdUser(String loggedEmail) async {
     List data = [];
@@ -92,15 +118,130 @@ class _HomePageState extends State<HomePage> {
   }
 
   int sumMakanan() {
-    int sumMakanan = sum(breakfast) + sum(lunch) + sum(dinner) + sum(snack);
+    int sumMakanan = 0;
+    sumMakanan = sum(breakfastCurrDate) +
+        sum(lunchCurrDate) +
+        sum(dinnerCurrDate) +
+        sum(snackCurrDate);
     return sumMakanan;
   }
 
+  String currentDate = '';
+
+  void filterDataLatihan(String date) {
+    if (date.isEmpty) {
+      latihanCurrDate =
+          dataLatihan.map((e) => LatihanModel.fromJson(e)).toList();
+    } else {
+      latihanCurrDate_pre =
+          dataLatihan.map((e) => LatihanModel.fromJson(e)).toList();
+
+      latihanCurrDate = latihanCurrDate_pre
+          .where((latihan) => latihan.date.contains(date))
+          .toList();
+    }
+
+    // Refresh the UI
+    setState(() {
+      latihanCurrDate = latihanCurrDate;
+      currentDate = date;
+    });
+  }
+
+  void filterDataBreakfast(String date) {
+    if (date.isEmpty) {
+      breakfastCurrDate =
+          dataBreakfast.map((e) => BreakfastModel.fromJson(e)).toList();
+    } else {
+      breakfastCurrDate_pre =
+          dataBreakfast.map((e) => BreakfastModel.fromJson(e)).toList();
+
+      breakfastCurrDate = breakfastCurrDate_pre
+          .where((breakfast) => breakfast.date.contains(date))
+          .toList();
+    }
+
+    // Refresh the UI
+    setState(() {
+      breakfastCurrDate = breakfastCurrDate;
+    });
+  }
+
+  void filterDataLunch(String date) {
+    if (date.isEmpty) {
+      lunchCurrDate = dataLunch.map((e) => LunchModel.fromJson(e)).toList();
+    } else {
+      lunchCurrDate_pre = dataLunch.map((e) => LunchModel.fromJson(e)).toList();
+
+      lunchCurrDate = lunchCurrDate_pre
+          .where((lunch) => lunch.date.contains(date))
+          .toList();
+    }
+
+    // Refresh the UI
+    setState(() {
+      lunchCurrDate = lunchCurrDate;
+    });
+  }
+
+  void filterDataDinner(String date) {
+    if (date.isEmpty) {
+      dinnerCurrDate = dataDinner.map((e) => DinnerModel.fromJson(e)).toList();
+    } else {
+      dinnerCurrDate_pre =
+          dataDinner.map((e) => DinnerModel.fromJson(e)).toList();
+
+      dinnerCurrDate = dinnerCurrDate_pre
+          .where((dinner) => dinner.date.contains(date))
+          .toList();
+    }
+
+    // Refresh the UI
+    setState(() {
+      dinnerCurrDate = dinnerCurrDate;
+    });
+  }
+
+  void filterDataSnack(String date) {
+    if (date.isEmpty) {
+      snackCurrDate = dataSnack.map((e) => SnackModel.fromJson(e)).toList();
+    } else {
+      snackCurrDate_pre = dataSnack.map((e) => SnackModel.fromJson(e)).toList();
+
+      snackCurrDate = snackCurrDate_pre
+          .where((snack) => snack.date.contains(date))
+          .toList();
+    }
+
+    // Refresh the UI
+    setState(() {
+      snackCurrDate = snackCurrDate;
+    });
+  }
+
+  int jumlahCaloriesMakanan = 0;
   @override
   void initState() {
     _currentUser = widget.user;
+
+    _initializeData();
     _notifier = ValueNotifier<int>(0);
     super.initState();
+  }
+
+  void _initializeData() async {
+    await selectAllData();
+    filterDataLatihan(_dateFormatter(DateTime.now()));
+    filterDataBreakfast(_dateFormatter(DateTime.now()));
+    filterDataLunch(_dateFormatter(DateTime.now()));
+    filterDataDinner(_dateFormatter(DateTime.now()));
+    filterDataSnack(_dateFormatter(DateTime.now()));
+    sumMakanan();
+    jumlahCaloriesMakanan = sumMakanan();
+    _notifier = ValueNotifier<int>(0);
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      showAlert();
+    });
   }
 
   File? image;
@@ -345,7 +486,7 @@ class _HomePageState extends State<HomePage> {
                                               child: Column(
                                                 children: [
                                                   Text(
-                                                    'Kalori',
+                                                    'Status Kalori',
                                                     style: GoogleFonts.rubik(
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -355,6 +496,13 @@ class _HomePageState extends State<HomePage> {
                                                             250,
                                                             250,
                                                             250)),
+                                                  ),
+                                                  Text(
+                                                    _dateFormatter(
+                                                        DateTime.now()),
+                                                    style: GoogleFonts.rubik(
+                                                        fontSize: 16.0,
+                                                        color: Colors.grey),
                                                   ),
                                                   Text(
                                                       'Sisa = Sasaran - Makanan + Latihan',
@@ -399,7 +547,11 @@ class _HomePageState extends State<HomePage> {
                                                                   .center,
                                                           children: [
                                                             Text(
-                                                              '${user[0].caloriestarget}',
+                                                              (int.parse(user[0]
+                                                                          .caloriestarget) -
+                                                                      sumMakanan() +
+                                                                      sum(latihanCurrDate))
+                                                                  .toString(),
                                                               style: GoogleFonts.rubik(
                                                                   color: Color
                                                                       .fromARGB(
@@ -541,7 +693,8 @@ class _HomePageState extends State<HomePage> {
                                                                 ),
                                                               ),
                                                               Text(
-                                                                '0',
+                                                                sum(latihanCurrDate)
+                                                                    .toString(),
                                                                 style: GoogleFonts
                                                                     .crimsonPro(
                                                                   color: Color
@@ -567,19 +720,14 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                             ),
                                             ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pushReplacement(
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              ProfilePage(
-                                                                  user:
-                                                                      _currentUser,
-                                                                  loggedEmail:
-                                                                      _currentUser
-                                                                          .email
-                                                                          .toString())));
+                                                onPressed: () async {
+                                                  Navigator.pushNamed(
+                                                      context, 'edit_sasaran',
+                                                      arguments: [user[0].uid]);
                                                 },
-                                                child: Text('Edit Target')),
+                                                child: Text(
+                                                  'Edit Sasaran',
+                                                )),
                                             SizedBox(height: 8),
                                           ],
                                         ),
@@ -617,7 +765,8 @@ class _HomePageState extends State<HomePage> {
                                                         ),
                                                       ),
                                                       Text(
-                                                        '0',
+                                                        sum(latihanCurrDate)
+                                                            .toString(),
                                                         style: GoogleFonts
                                                             .crimsonPro(
                                                           color: Color.fromARGB(
@@ -637,7 +786,10 @@ class _HomePageState extends State<HomePage> {
                                                               builder: (context) =>
                                                                   InputLatihan(
                                                                       user:
-                                                                          _currentUser));
+                                                                          _currentUser,
+                                                                      currDate:
+                                                                          _dateFormatter(
+                                                                              DateTime.now())));
                                                         },
                                                         child: Text(
                                                             'Tambahkan Latihan'),
@@ -676,7 +828,7 @@ class _HomePageState extends State<HomePage> {
                                                         ),
                                                       ),
                                                       Text(
-                                                        '0',
+                                                        sumMakanan().toString(),
                                                         style: GoogleFonts
                                                             .crimsonPro(
                                                           color: Color.fromARGB(
@@ -735,11 +887,85 @@ class _HomePageState extends State<HomePage> {
       if (data is BreakfastModel ||
           data is LunchModel ||
           data is DinnerModel ||
-          data is SnackModel) {
+          data is SnackModel ||
+          data is LatihanModel) {
         return total + int.parse(data.calories);
       } else {
         return total;
       }
     });
+  }
+
+  String _dateFormatter(DateTime tm) {
+    DateTime today = new DateTime.now();
+    Duration oneDay = new Duration(days: 1);
+    Duration twoDay = new Duration(days: 2);
+    String month;
+
+    switch (tm.month) {
+      case 1:
+        month = "1";
+        break;
+      case 2:
+        month = "2";
+        break;
+      case 3:
+        month = "3";
+        break;
+      case 4:
+        month = "4";
+        break;
+      case 5:
+        month = "5";
+        break;
+      case 6:
+        month = "6";
+        break;
+      case 7:
+        month = "7";
+        break;
+      case 8:
+        month = "8";
+        break;
+      case 9:
+        month = "9";
+        break;
+      case 10:
+        month = "10";
+        break;
+      case 11:
+        month = "11";
+        break;
+      case 12:
+        month = "12";
+        break;
+      default:
+        month = "Undefined";
+        break;
+    }
+
+    Duration difference = today.difference(tm);
+
+    if (difference.compareTo(oneDay) < 1) {
+      return "${tm.year}-$month-${tm.day}";
+    } else if (difference.compareTo(twoDay) < 1) {
+      return "${tm.year}-$month-${tm.day}";
+    } else {
+      return "${tm.year}-$month-${tm.day}";
+    }
+  }
+
+  Future<void> showAlert() async {
+    if (sumMakanan() == 0) {
+      return QuickAlert.show(
+        context: context,
+        type: QuickAlertType.info,
+        title: 'Kalori Harian',
+        text: 'Anda Belum Menambahkan Makanan Hari ini. Tambahkan Sekarang?',
+        onConfirmBtnTap: () {
+          Navigator.pop(context);
+        },
+      );
+    } else {}
   }
 }

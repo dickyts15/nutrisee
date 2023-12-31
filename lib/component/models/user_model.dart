@@ -12,6 +12,8 @@ class UserModel {
   final String caloriestarget;
   final String profpic;
   final String uid;
+  final String tanggallahir;
+  final String activity;
 
   UserModel(
       {required this.id,
@@ -26,7 +28,9 @@ class UserModel {
       required this.height,
       required this.caloriestarget,
       required this.profpic,
-      required this.uid});
+      required this.uid,
+      required this.tanggallahir,
+      required this.activity});
 
   factory UserModel.fromJson(Map<String, dynamic> data) {
     return UserModel(
@@ -42,6 +46,8 @@ class UserModel {
         height: data['height'],
         caloriestarget: data['caloriestarget'],
         profpic: data['profpic'],
-        uid: data['uid']);
+        uid: data['uid'],
+        tanggallahir: data['tanggallahir'],
+        activity: data['activity']);
   }
 }

@@ -44,6 +44,9 @@ dependencies:
   flutter_calendar_carousel: ^2.4.2
   file_picker: ^6.1.1
   quickalert: ^1.0.2
+  fl_chart: ^0.66.0
+  tuple: ^2.0.2
+  pie_chart: ^5.4.0
 
 dev_dependencies:
   flutter_test:

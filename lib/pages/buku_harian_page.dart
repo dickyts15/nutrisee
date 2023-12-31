@@ -16,6 +16,7 @@ import 'package:nutrisee/services/input_lunch.dart';
 import 'package:nutrisee/services/input_snack.dart';
 import 'package:nutrisee/utils/config.dart';
 import 'package:nutrisee/utils/restapi.dart';
+import 'package:pie_chart/pie_chart.dart';
 
 class BukuHarianPage extends StatefulWidget {
   final User user;
@@ -203,6 +204,15 @@ class _BukuHarianPageState extends State<BukuHarianPage> {
   Color _rightArrowColor = Colors.grey;
   Color _leftArrowColor = Colors.grey;
 
+  double sumCarbsMakanan = 0;
+  double sumProteinsMakanan = 0;
+  double sumFatsMakanan = 0;
+
+  Map<String, double> dataMap = {
+    "Carbs : 0 gr": 0,
+    "Fats : 0 gr": 0,
+    "Protein : 0 gr": 0,
+  };
   @override
   void initState() {
     _currentUser = widget.user;
@@ -219,6 +229,15 @@ class _BukuHarianPageState extends State<BukuHarianPage> {
     filterDataDinner(_dateFormatter(_value));
     filterDataSnack(_dateFormatter(_value));
     _notifier = ValueNotifier<int>(0);
+
+    sumCarbsMakanan = sumCarbMakanan().toDouble();
+    sumProteinsMakanan = sumProteinMakanan().toDouble();
+    sumFatsMakanan = sumFatMakanan().toDouble();
+    dataMap = {
+      "Carbs : $sumCarbsMakanan gr": sumCarbsMakanan,
+      "Fats : $sumFatsMakanan gr": sumFatsMakanan,
+      "Protein : $sumProteinsMakanan gr": sumProteinsMakanan,
+    };
   }
 
   @override
@@ -311,6 +330,28 @@ class _BukuHarianPageState extends State<BukuHarianPage> {
                             ),
                             SizedBox(height: 8),
                             Container(
+                              child: PieChart(
+                                dataMap: dataMap,
+                                chartType: ChartType.disc,
+                                chartRadius: 125,
+                                legendOptions: LegendOptions(
+                                  showLegendsInRow: false,
+                                  legendPosition: LegendPosition.right,
+                                  showLegends: true,
+                                  legendTextStyle: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                chartValuesOptions: ChartValuesOptions(
+                                  showChartValueBackground: false,
+                                  showChartValues: true,
+                                  showChartValuesInPercentage: true,
+                                  showChartValuesOutside: false,
+                                  decimalPlaces: 1,
+                                ),
+                              ),
+                            ),
+                            Container(
                               height: 5.0,
                               decoration: BoxDecoration(
                                 border: Border(
@@ -364,10 +405,42 @@ class _BukuHarianPageState extends State<BukuHarianPage> {
                                                   ListTile(
                                                     title: Text(
                                                         item.namabreakfast),
-                                                    subtitle: Text(
-                                                        '${item.quantity} gr'),
-                                                    leading: Text(
-                                                        '${item.calories} kcal'),
+                                                    subtitle: Row(children: [
+                                                      Icon(
+                                                        Icons.circle,
+                                                        color: Colors.redAccent,
+                                                        size: 15,
+                                                      ),
+                                                      Text('${item.carbs} gr '),
+                                                      SizedBox(width: 8),
+                                                      Icon(
+                                                        Icons.circle,
+                                                        color:
+                                                            Colors.blueAccent,
+                                                        size: 15,
+                                                      ),
+                                                      Text('${item.fat} gr '),
+                                                      SizedBox(width: 8),
+                                                      Icon(
+                                                        Icons.circle,
+                                                        color:
+                                                            Colors.greenAccent,
+                                                        size: 15,
+                                                      ),
+                                                      Text(
+                                                          '${item.protein} gr '),
+                                                    ]),
+                                                    leading: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceEvenly,
+                                                      children: [
+                                                        Text(
+                                                            '${item.quantity} gr'),
+                                                        Text(
+                                                            '${item.calories} kcal'),
+                                                      ],
+                                                    ),
                                                     trailing: IconButton(
                                                       icon: Icon(Icons.delete,
                                                           color: Colors.red),
@@ -1263,6 +1336,14 @@ class _BukuHarianPageState extends State<BukuHarianPage> {
       filterDataLunch(_dateFormatter(_value));
       filterDataDinner(_dateFormatter(_value));
       filterDataSnack(_dateFormatter(_value));
+      sumCarbsMakanan = sumCarbMakanan().toDouble();
+      sumProteinsMakanan = sumProteinMakanan().toDouble();
+      sumFatsMakanan = sumFatMakanan().toDouble();
+      dataMap = {
+        "Carbs : $sumCarbsMakanan gr": sumCarbsMakanan,
+        "Fats : $sumFatsMakanan gr": sumFatsMakanan,
+        "Protein : $sumProteinsMakanan gr": sumProteinsMakanan,
+      };
     });
   }
 
@@ -1274,6 +1355,14 @@ class _BukuHarianPageState extends State<BukuHarianPage> {
       filterDataLunch(_dateFormatter(_value));
       filterDataDinner(_dateFormatter(_value));
       filterDataSnack(_dateFormatter(_value));
+      sumCarbsMakanan = sumCarbMakanan().toDouble();
+      sumProteinsMakanan = sumProteinMakanan().toDouble();
+      sumFatsMakanan = sumFatMakanan().toDouble();
+      dataMap = {
+        "Carbs : $sumCarbsMakanan gr": sumCarbsMakanan,
+        "Fats : $sumFatsMakanan gr": sumFatsMakanan,
+        "Protein : $sumProteinsMakanan gr": sumProteinsMakanan,
+      };
     });
   }
 
@@ -1359,6 +1448,14 @@ class _BukuHarianPageState extends State<BukuHarianPage> {
         filterDataLunch(_dateFormatter(_value));
         filterDataDinner(_dateFormatter(_value));
         filterDataSnack(_dateFormatter(_value));
+        sumCarbsMakanan = sumCarbMakanan().toDouble();
+        sumProteinsMakanan = sumProteinMakanan().toDouble();
+        sumFatsMakanan = sumFatMakanan().toDouble();
+        dataMap = {
+          "Carbs : $sumCarbsMakanan gr": sumCarbsMakanan,
+          "Fats : $sumFatsMakanan gr": sumFatsMakanan,
+          "Protein : $sumProteinsMakanan gr": sumProteinsMakanan,
+        };
       });
     _stateSetter();
   }
@@ -1390,6 +1487,72 @@ class _BukuHarianPageState extends State<BukuHarianPage> {
         sum(lunchCurrDate) +
         sum(dinnerCurrDate) +
         sum(snackCurrDate);
+    return total;
+  }
+
+  int sumCarb(List<dynamic> data) {
+    return data.fold(0, (total, data) {
+      if (data is BreakfastModel ||
+          data is LunchModel ||
+          data is DinnerModel ||
+          data is SnackModel) {
+        return total + int.parse(data.carbs);
+      } else {
+        return total;
+      }
+    });
+  }
+
+  int sumCarbMakanan() {
+    int total = 0;
+    total = sumCarb(breakfastCurrDate) +
+        sumCarb(lunchCurrDate) +
+        sumCarb(dinnerCurrDate) +
+        sumCarb(snackCurrDate);
+    return total;
+  }
+
+  int sumProtein(List<dynamic> data) {
+    return data.fold(0, (total, data) {
+      if (data is BreakfastModel ||
+          data is LunchModel ||
+          data is DinnerModel ||
+          data is SnackModel) {
+        return total + int.parse(data.protein);
+      } else {
+        return total;
+      }
+    });
+  }
+
+  int sumProteinMakanan() {
+    int total = 0;
+    total = sumProtein(breakfastCurrDate) +
+        sumProtein(lunchCurrDate) +
+        sumProtein(dinnerCurrDate) +
+        sumProtein(snackCurrDate);
+    return total;
+  }
+
+  int sumFats(List<dynamic> data) {
+    return data.fold(0, (total, data) {
+      if (data is BreakfastModel ||
+          data is LunchModel ||
+          data is DinnerModel ||
+          data is SnackModel) {
+        return total + int.parse(data.fat);
+      } else {
+        return total;
+      }
+    });
+  }
+
+  int sumFatMakanan() {
+    int total = 0;
+    total = sumFats(breakfastCurrDate) +
+        sumFats(lunchCurrDate) +
+        sumFats(dinnerCurrDate) +
+        sumFats(snackCurrDate);
     return total;
   }
 }
